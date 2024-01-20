@@ -41,13 +41,14 @@ def output_partitions(k, dataset):
 
 
 def main():
+    k = int(input('How many partitions do you want to create? '))
     delim = ' ' * 4
     file_path = '/home/swine/Documents/UEF Courses/Y1_S2_P1/Ex1 Dataset/s1/s1.txt'
     print('Reading file...')
     dataset = read_data(file_path, delim)
     print('Reading file completed\n\n\n')
-    output_centroids(15, dataset)
-    output_partitions(15, dataset)
+    output_centroids(k, dataset)
+    output_partitions(k, dataset)
 
 if __name__ == '__main__':
     main()
