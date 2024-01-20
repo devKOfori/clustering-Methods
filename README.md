@@ -1,6 +1,6 @@
 **Project Objectives**
 
-1. Select your favorite programming language and implement clustering tool that is capable of reading any
+1. Implement clustering tool (using Python) that is capable of reading any
 text data from this page: http://cs.uef.fi/sipu/datasets/, and output clustering result in two output files:
 centroid.txt and partition.txt.
 2. Implement dummy clustering algorithm that selects k (user givenparameter) random data points and
