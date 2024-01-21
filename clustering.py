@@ -4,6 +4,9 @@ import math
 dataset = []
 
 class DataPoint:
+    '''
+    This is a model of the data objects
+    '''
     def __init__(self, x, y):
         self.x = int(x)
         self.y = int(y)
@@ -21,6 +24,11 @@ class DataPoint:
 
 
 def read_data(file_path: str, delim=''):
+    '''
+    This function reads data from a text file, 
+    creates a data object using the DataPoint class
+    and returns a list of the the data objects
+    '''
     with open(file_path, 'r') as file:
         for line_number, line in enumerate(file, start=1):
             line_content = line.strip()
@@ -40,6 +48,11 @@ def read_data(file_path: str, delim=''):
     return dataset
 
 def output_centroids(k, dataset):
+    '''
+    This function selects k random data points 
+    and outputs them as centroids.
+    The centroids are outputted into the file centroid.txt
+    '''
     centroids = random.sample(dataset, k)
     with open('centroid.txt', 'a') as file:
         for point in centroids:
@@ -48,6 +61,12 @@ def output_centroids(k, dataset):
     return centroids
 
 def output_partitions(k, dataset):
+    '''
+    This function selects the partition of each data point randomly
+    as a number from 1 to k
+    where k is the total number of partitions
+    and outputs the partition number to partition.txt file
+    '''
     with open('partition.txt', 'a') as file:
         for point in dataset:
             partition = random.randint(1, k)
@@ -55,21 +74,35 @@ def output_partitions(k, dataset):
             file.write(output_line)
 
 def calculate_euclidean_distance(dp1, dp2):
+    '''
+    This function takes two data objects (or centroids)
+    and returns the Euclidean distance between them
+    '''
     difference_tuple = dp1 - dp2
     x_diff, y_diff = difference_tuple
     euclidean_distance = math.sqrt((x_diff**2) + (y_diff**2))
     return euclidean_distance
 
-def calculate_sum_of_squared_error(dataset, centroids_list):
-    sum_of_squared_error = 0
+def calculate_sum_of_squared_distance(dataset, centroids_list):
+    '''
+    This function calculate the sum of squared distance 
+    between each data point and a randomly chosen centroid
+    '''
+    sum_of_squared_distance = 0
     random_centroid = random.choice(centroids_list)
     for datapoint in dataset:
         difference_tuple = datapoint - random_centroid
         x_diff, y_diff = difference_tuple
-        sum_of_squared_error += x_diff**2 + y_diff**2
-    return sum_of_squared_error
+        diff_dp_centroid = x_diff**2 + y_diff**2
+        sum_of_squared_distance += diff_dp_centroid
+    return sum_of_squared_distance
 
 def pairwise_distance(dataset):
+    '''
+    This function calculates the pairwise distance 
+    between all data points
+    and outputs the average pairwise distance between all the data points
+    '''
     total_pairwise_distance = 0
     N = len(dataset)
     for i in range(0, N-1):
@@ -88,7 +121,7 @@ def main():
     print('Reading file completed\n\n\n')
     centroids = output_centroids(k, dataset)
     output_partitions(k, dataset)
-    print(f'The sum of squared error is {calculate_sum_of_squared_error(dataset, centroids)}')
+    print(f'The sum of squared distance is {calculate_sum_of_squared_distance(dataset, centroids)}')
 
 if __name__ == '__main__':
     main()
