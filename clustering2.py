@@ -11,7 +11,7 @@ centroids_file_path = "centroid.txt"
 current_dir = os.getcwd()
 new_file_path = os.path.join(current_dir, file_name)
 
-def process_original_data(file_path: str):
+def remove_byte_order_mark(file_path: str):
     """
     This function processes the original dataset
     by removing the Byte Order Mark from the data
@@ -24,15 +24,15 @@ def process_original_data(file_path: str):
     with open(file_name, "w") as file:
         file.writelines(lines)
 
-def read_data(file_path: str, delim: str="", apply_lstrip: bool = False):
+def read_data(file_path: str, delim: str="", remove_bom: bool = False):
     """
     This function loads data from a text file
     and returns a numpy array as a dataset containing
     all the loaded data
     """
-    if apply_lstrip:
+    if remove_bom:
         if not os.path.exists(new_file_path):
-            process_original_data(file_path)
+            remove_byte_order_mark(file_path)
     dataset = np.genfromtxt(file_path, dtype=int, skip_header=0)
     return dataset
 
@@ -146,15 +146,21 @@ def update_centroid(dataset):
     new_centroid = np.mean(dataset, axis=0)
     return new_centroid
 
+def monitor_centroid_statistics(centroid, centroid_partitions):
+    centroid_sse = calculate_sum_of_squared_distance(centroid_partitions[:, :-1], centroid)
+    return centroid_sse
+
 def kMeans(labelled_data_file_path: str, centroids_file_path: str, delim: str = ""):
     labelled_data = read_data(labelled_data_file_path, delim)
     centroids = read_data(centroids_file_path, delim=delim)
     
     iteration = 0
     centroid_changes_list = []
+    key_prefix = "centroid_"
     while True:
         iteration += 1
         assignment = []
+        centroids_sse_dict = {}
 
         print(f"{'-----' * 5}\n{iteration}\n{'-----' * 5}")
         for datapoint_index, datapoint in enumerate(labelled_data):
@@ -167,13 +173,16 @@ def kMeans(labelled_data_file_path: str, centroids_file_path: str, delim: str = 
         new_centroids = []
         for centroid_index, centroid in enumerate(centroids):
             centroid_partitions = get_centroid_partitions(labelled_data, centroid_index)
+            centroid_sse = monitor_centroid_statistics(centroid_index, centroid_partitions)
+            key = key_prefix + str(centroid_index)
+            centroids_sse_dict[key] = centroid_sse
             new_centroid = update_centroid(centroid_partitions)
             print(f"Old Centroid: {centroids[centroid_index]}\nNew Centroid: {new_centroid}")
             new_centroid = new_centroid[:-1]
             centroids[centroid_index] = new_centroid
             new_centroids.append(new_centroid)
         
-
+        print(f"{'*' * 20}\n{centroids_sse_dict}\n{'*' * 20}")
         centroid_changes = np.linalg.norm(np.array(new_centroids) - np.array(centroids))
         centroid_changes_list.append(centroid_changes)
         if iteration > 1:
