@@ -19,7 +19,7 @@ def remove_byte_order_mark(file_path: str):
     """
     with open(file_path, "r") as file:
         lines = file.readlines()
-        lines[0] = lines[0].lstrip("\ufeff")
+        lines[0] = lines[0].lstrip("\ufeff") #remove byte order mark
 
     with open(file_name, "w") as file:
         file.writelines(lines)
