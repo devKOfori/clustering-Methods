@@ -1,6 +1,8 @@
 import os
 from model import DataPoint
 import helpers
+from helpers import KMeans
+import new_algorithm
 
 BASE_DATA_DIR = r"C:\Users\Eben Ofori-Mensah\Documents\IMPIT\Y1S2P1\ClusteringMethods\Data_Files"
 dataset_name = "s1.txt"
@@ -64,16 +66,4 @@ def load_data(file_path: str = file_path, delim: str=delim, remove_bom: bool = T
     
 if __name__ == "__main__":
     ds = load_data()
-    centroids = helpers.generate_centroids(15, ds)
-    # partition_boolean = helpers.generate_data_partitions(15, ds)
-    # print(ds)
-    # print(ds[4998] + ds[4999])
-    # print(len(ds))
-    # euclidean_dist = helpers.calculate_euclidean_distance(ds[0], ds[1])
-    # sse = helpers.calculate_sum_of_squared_error(ds, centroids)
-    # apd = helpers.calculate_pairwise_distance(ds)
-    # nn = helpers.find_nearest_neighbor(ds[0], ds)
-    partition_list = helpers.generate_optimal_partitions(ds, centroids)
-    # print(f"SSE: {sse}\n")
-    # print(f"Average Pairwise Distance: {apd}")
-    # print(f"Nearest Neighbor of Point {ds[0]} is {nn[1]}")
+    KMeans(ds, 15)
